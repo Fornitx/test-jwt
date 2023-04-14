@@ -14,13 +14,10 @@ import crypto.JwtUtils
 import crypto.KeyUtils
 import crypto.KeyUtils.parseKey
 import crypto.KeyUtils.toBase64
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
 import java.security.interfaces.RSAPublicKey
-import java.util.*
 
 class Nimbus {
     private fun sign(signer: JWSSigner, algorithm: JWSAlgorithm): String {
@@ -34,6 +31,7 @@ class Nimbus {
 
         val jwt = signedJWT.serialize()
         JwtUtils.printJwt(jwt)
+        println()
 
         return jwt
     }

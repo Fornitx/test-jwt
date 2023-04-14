@@ -22,5 +22,9 @@ subprojects {
     kotlin {
         jvmToolchain(19)
     }
+
+    tasks.register("allDeps", DependencyReportTask::class) {
+
+    }
 }
 

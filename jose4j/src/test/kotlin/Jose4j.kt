@@ -2,22 +2,18 @@ import crypto.JwtUtils
 import crypto.KeyUtils
 import crypto.KeyUtils.parseKey
 import crypto.KeyUtils.toBase64
-import org.jose4j.jwa.AlgorithmConstraints.ConstraintType
 import org.jose4j.jwk.EcJwkGenerator
 import org.jose4j.jwk.PublicJsonWebKey
-import org.jose4j.jwk.RsaJsonWebKey
 import org.jose4j.jwk.RsaJwkGenerator
 import org.jose4j.jws.AlgorithmIdentifiers
 import org.jose4j.jws.JsonWebSignature
+import org.jose4j.jws.RsaUsingShaAlgorithm
 import org.jose4j.jwt.JwtClaims
 import org.jose4j.jwt.NumericDate
-import org.jose4j.jwt.consumer.ErrorCodes
-import org.jose4j.jwt.consumer.InvalidJwtException
 import org.jose4j.jwt.consumer.JwtConsumerBuilder
 import org.jose4j.keys.EllipticCurves
 import org.junit.jupiter.api.Test
 import java.security.KeyFactory
-import java.security.spec.EllipticCurve
 import java.time.Duration
 import java.time.Instant
 
@@ -42,18 +38,26 @@ class Jose4j {
         return jwt to publicKey
     }
 
+    private fun parse(jwt: String, publicKeyBase64: String): JwtClaims {
+        val jwtConsumer = JwtConsumerBuilder()
+            .setVerificationKeyResolver { jws, _ ->
+                KeyFactory.getInstance(jws.algorithm.keyType).parseKey(publicKeyBase64)
+            }
+            .setSkipDefaultAudienceValidation()
+            .build()
+
+        return jwtConsumer.processToClaims(jwt)
+    }
+
     @Test
     fun testRsa() {
         val jsonWebKey = RsaJwkGenerator.generateJwk(2048)
 
+        RsaUsingShaAlgorithm.RsaSha256().keyType
+
         val (jwt, publicKeyBase64) = sign(jsonWebKey, AlgorithmIdentifiers.RSA_USING_SHA256)
 
-        val jwtConsumer = JwtConsumerBuilder()
-            .setVerificationKey(KeyFactory.getInstance("RSA").parseKey(publicKeyBase64))
-            .setSkipDefaultAudienceValidation()
-            .build()
-
-        val jwtClaims = jwtConsumer.processToClaims(jwt)
+        val jwtClaims = parse(jwt, publicKeyBase64)
         println(jwtClaims)
         println(jwtClaims.audience)
     }
@@ -64,12 +68,7 @@ class Jose4j {
 
         val (jwt, publicKeyBase64) = sign(jsonWebKey, AlgorithmIdentifiers.ECDSA_USING_P256_CURVE_AND_SHA256)
 
-        val jwtConsumer = JwtConsumerBuilder()
-            .setVerificationKey(KeyFactory.getInstance("EC").parseKey(publicKeyBase64))
-            .setSkipDefaultAudienceValidation()
-            .build()
-
-        val jwtClaims = jwtConsumer.processToClaims(jwt)
+        val jwtClaims = parse(jwt, publicKeyBase64)
         println(jwtClaims)
         println(jwtClaims.audience)
     }
