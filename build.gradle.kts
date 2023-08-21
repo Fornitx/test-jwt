@@ -1,5 +1,7 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    kotlin("jvm") version System.getProperty("kotlin.version")
+    kotlin("jvm") version System.getProperty("kotlin_version")
 }
 
 allprojects {
@@ -11,20 +13,18 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     dependencies {
-        testImplementation(kotlin("test"))
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     }
 
-    tasks.test {
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs += "-Xjsr305=strict"
+            jvmTarget = "20"
+        }
+    }
+
+    tasks.withType<Test> {
         useJUnitPlatform()
     }
-
-    kotlin {
-        jvmToolchain(19)
-    }
-
-    tasks.register("allDeps", DependencyReportTask::class) {
-
-    }
 }
-

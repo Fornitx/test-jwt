@@ -29,12 +29,20 @@ class Jjwt {
         return Jwts.parserBuilder().setSigningKeyResolver(object : SigningKeyResolver {
             override fun resolveSigningKey(header: JwsHeader<*>, claims: Claims): Key {
                 val algorithm = SignatureAlgorithm.forName(header.algorithm)
-                return KeyFactory.getInstance(algorithm.familyName).parseKey(publicKeyBase64)
+                return KeyFactory.getInstance(algorithm(algorithm)).parseKey(publicKeyBase64)
             }
 
             override fun resolveSigningKey(header: JwsHeader<*>, plaintext: String): Key {
                 val algorithm = SignatureAlgorithm.forName(header.algorithm)
-                return KeyFactory.getInstance(algorithm.familyName).parseKey(publicKeyBase64)
+                return KeyFactory.getInstance(algorithm(algorithm)).parseKey(publicKeyBase64)
+            }
+
+            private fun algorithm(signatureAlgorithm: SignatureAlgorithm): String {
+                if (signatureAlgorithm.isRsa)
+                    return "RSA"
+                if (signatureAlgorithm.isEllipticCurve)
+                    return "EC"
+                throw UnsupportedOperationException()
             }
         }).build().parseClaimsJws(jwt)
     }
