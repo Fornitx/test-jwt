@@ -16,7 +16,6 @@ object JwtUtils {
     )
 
     fun printJwt(jwt: String) {
-        println("JWT: ${jwt.length}")
-        println(jwt)
+        println("JWT %d:%n\t%s".format(jwt.length, jwt))
     }
 }

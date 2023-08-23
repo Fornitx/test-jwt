@@ -9,14 +9,11 @@ import io.fusionauth.jwt.ec.ECVerifier
 import io.fusionauth.jwt.rsa.RSASigner
 import io.fusionauth.jwt.rsa.RSAVerifier
 import org.junit.jupiter.api.Test
-import java.time.ZonedDateTime
 
 class FusionAuth {
     private fun sign(signer: Signer): String {
-        val jwt = JWT()
-            .setIssuedAt(ZonedDateTime.now().minusDays(1))
-            .setExpiration(ZonedDateTime.now().plusDays(1))
-            .setAudience(arrayOf("A", "B"))
+        val jwt = JWT().setAudience(arrayOf("A", "B"))
+        jwt.otherClaims.putAll(JwtUtils.MAP)
 
         val encodedJWT = JWT.getEncoder().encode(jwt, signer)
         JwtUtils.printJwt(encodedJWT)
@@ -34,9 +31,10 @@ class FusionAuth {
     @Test
     fun testRsa() {
         val keyPair = JWTUtils.generate2048_RSAKeyPair()
+        KeyUtils.printPrivate(keyPair.privateKey)
         val signer = RSASigner.newSHA256Signer(keyPair.privateKey)
         val encodedJWT = sign(signer)
-        KeyUtils.printKey(keyPair.publicKey)
+        KeyUtils.printPublic(keyPair.publicKey)
         println()
 
         val verifier = RSAVerifier.newVerifier(keyPair.publicKey)
@@ -46,9 +44,10 @@ class FusionAuth {
     @Test
     fun testEc() {
         val keyPair = JWTUtils.generate256_ECKeyPair()
+        KeyUtils.printPrivate(keyPair.privateKey)
         val signer = ECSigner.newSHA256Signer(keyPair.privateKey)
         val encodedJWT = sign(signer)
-        KeyUtils.printKey(keyPair.publicKey)
+        KeyUtils.printPublic(keyPair.publicKey)
         println()
 
         val verifier = ECVerifier.newVerifier(keyPair.publicKey)

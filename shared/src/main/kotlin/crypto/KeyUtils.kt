@@ -2,8 +2,9 @@ package crypto
 
 import java.security.*
 import java.security.spec.ECGenParameterSpec
+import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
-import java.util.Base64
+import java.util.*
 
 object KeyUtils {
     fun rsaKeyPair(keysize: Int): KeyPair {
@@ -22,14 +23,23 @@ object KeyUtils {
         return Base64.getEncoder().encodeToString(this.encoded)
     }
 
-    fun KeyFactory.parseKey(key: String): PublicKey {
+    fun KeyFactory.parsePublic(key: String): PublicKey {
         val keyBytes = Base64.getDecoder().decode(key)
         val keySpec = X509EncodedKeySpec(keyBytes)
         return this.generatePublic(keySpec)
     }
 
-    fun printKey(key: String) {
-        println("PublicKey: ${key.length}")
-        println(key)
+    fun KeyFactory.parsePrivate(key: String): PrivateKey {
+        val keyBytes = Base64.getDecoder().decode(key)
+        val keySpec = PKCS8EncodedKeySpec(keyBytes)
+        return this.generatePrivate(keySpec)
+    }
+
+    fun printPrivate(keyBase64: String) {
+        println("Private key %d:%n\t%s".format(keyBase64.length, keyBase64))
+    }
+
+    fun printPublic(keyBase64: String) {
+        println("Public key %d:%n\t%s".format(keyBase64.length, keyBase64))
     }
 }

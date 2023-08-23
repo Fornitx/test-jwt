@@ -12,7 +12,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import crypto.JwtUtils
 import crypto.KeyUtils
-import crypto.KeyUtils.parseKey
+import crypto.KeyUtils.parsePublic
 import crypto.KeyUtils.toBase64
 import org.junit.jupiter.api.Test
 import java.security.KeyFactory
@@ -42,13 +42,13 @@ class Nimbus {
         val signer = RSASSASigner(jwk)
         val jwt = sign(signer, JWSAlgorithm.RS256)
         val publicKeyBase64 = jwk.toPublicKey().toBase64()
-        KeyUtils.printKey(publicKeyBase64)
+        KeyUtils.printPublic(publicKeyBase64)
 
         val signedJWT = SignedJWT.parse(jwt)
         println(signedJWT.header)
         println(signedJWT.payload)
 
-        val verifier = RSASSAVerifier(KeyFactory.getInstance("RSA").parseKey(publicKeyBase64) as RSAPublicKey)
+        val verifier = RSASSAVerifier(KeyFactory.getInstance("RSA").parsePublic(publicKeyBase64) as RSAPublicKey)
         println(signedJWT.verify(verifier))
     }
 
@@ -58,13 +58,13 @@ class Nimbus {
         val signer = ECDSASigner(jwk)
         val jwt = sign(signer, JWSAlgorithm.ES256)
         val publicKeyBase64 = jwk.toPublicKey().toBase64()
-        KeyUtils.printKey(publicKeyBase64)
+        KeyUtils.printPublic(publicKeyBase64)
 
         val signedJWT = SignedJWT.parse(jwt)
         println(signedJWT.header)
         println(signedJWT.payload)
 
-        val verifier = ECDSAVerifier(KeyFactory.getInstance("EC").parseKey(publicKeyBase64) as ECPublicKey)
+        val verifier = ECDSAVerifier(KeyFactory.getInstance("EC").parsePublic(publicKeyBase64) as ECPublicKey)
         println(signedJWT.verify(verifier))
     }
 }
