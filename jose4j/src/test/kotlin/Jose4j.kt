@@ -24,7 +24,6 @@ class Jose4j {
         KeyUtils.printPrivate(privateKeyBase64)
 
         val claims = JwtClaims()
-        claims.claimsMap
         claims.setAudience("A", "B")
 
         val jws = JsonWebSignature()
