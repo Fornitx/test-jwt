@@ -3,12 +3,13 @@ import crypto.KeyUtils
 import crypto.KeyUtils.parsePrivate
 import crypto.KeyUtils.parsePublic
 import crypto.KeyUtils.toBase64
-import io.jsonwebtoken.*
-import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jws
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.security.SignatureAlgorithm
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
-import java.security.Key
+import org.junit.jupiter.params.provider.ValueSource
 import java.security.KeyFactory
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -18,8 +19,14 @@ class Jjwt {
         val privateKey = KeyFactory.getInstance(algorithm).parsePrivate(privateKeyBase64)
 
         val jwt = Jwts.builder()
-            .setClaims(JwtUtils.MAP)
-            .setAudience("A")
+//            .claims(JwtUtils.MAP)
+            .claims()
+            .add("abc", 12345)
+            .audience()
+            .add("A")
+            .add("B")
+            .and()
+            .and()
             .signWith(privateKey)
             .compact()
         JwtUtils.printJwt(jwt)
@@ -28,37 +35,30 @@ class Jjwt {
 
     private fun parse(token: String, publicKeyBase64: String): Jws<Claims> {
         KeyUtils.printPublic(publicKeyBase64)
-        return Jwts.parserBuilder().setSigningKeyResolver(object : SigningKeyResolver {
-            override fun resolveSigningKey(header: JwsHeader<*>, claims: Claims): Key {
-                val algorithm = SignatureAlgorithm.forName(header.algorithm)
-                return keyFactory(algorithm).parsePublic(publicKeyBase64)
+        return Jwts.parser().keyLocator { header ->
+            val algorithm = header.algorithm
+            val signatureAlgorithm = Jwts.SIG.get()[algorithm] as SignatureAlgorithm
+            val keyFactoryAlgorithm = if (signatureAlgorithm.id.startsWith("RS")) {
+                "RSA"
+            } else if (signatureAlgorithm.id.startsWith("ES")) {
+                "EC"
+            } else {
+                throw RuntimeException("Unsupported signature algorithm ${signatureAlgorithm.id}")
             }
-
-            override fun resolveSigningKey(header: JwsHeader<*>, plaintext: String): Key {
-                val algorithm = SignatureAlgorithm.forName(header.algorithm)
-                return keyFactory(algorithm).parsePublic(publicKeyBase64)
-            }
-
-            private fun keyFactory(signatureAlgorithm: SignatureAlgorithm): KeyFactory = KeyFactory.getInstance(
-                if (signatureAlgorithm.isRsa)
-                    "RSA"
-                else if (signatureAlgorithm.isEllipticCurve)
-                    "EC"
-                else throw UnsupportedOperationException()
-            )
-        }).build().parseClaimsJws(token)
+            KeyFactory.getInstance(keyFactoryAlgorithm).parsePublic(publicKeyBase64)
+        }.build().parseSignedClaims(token)
     }
 
     @ParameterizedTest
-    @EnumSource(SignatureAlgorithm::class, names = ["RS256", "ES256"])
-    fun test(signatureAlgorithm: SignatureAlgorithm) {
-        val keyPair = Keys.keyPairFor(signatureAlgorithm)
+    @ValueSource(strings = ["RS256", "ES256"])
+    fun test(algorithm: String) {
+        val keyPair = (Jwts.SIG.get()[algorithm] as SignatureAlgorithm).keyPair().build()
         val jwt = sign(keyPair.private.toBase64(), keyPair.private.algorithm)
 
         val jwtClaims = parse(jwt, keyPair.public.toBase64())
         println()
         println(jwtClaims.header)
-        println(jwtClaims.body)
-        println(jwtClaims.body.audience)
+        println(jwtClaims.payload)
+        println(jwtClaims.payload.audience)
     }
 }

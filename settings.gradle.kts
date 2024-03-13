@@ -6,9 +6,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "test-jwt"
 
-include("auth0")
-include("jose4j")
-include("nimbus")
-include("shared")
-include("jsonwebtoken")
-include("fusionauth")
+include("auth0", "fusionauth", "jose4j", "jsonwebtoken", "kjwt", "nimbus", "shared")
