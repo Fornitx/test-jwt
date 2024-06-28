@@ -7,13 +7,12 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   test:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
     - uses: actions/checkout@v4
