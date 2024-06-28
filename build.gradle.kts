@@ -1,13 +1,11 @@
 plugins {
-    kotlin("jvm") version System.getProperty("kotlin_version")
+    kotlin("jvm")
 }
 
 allprojects {
     group = "org.example"
     version = "1.0-SNAPSHOT"
-}
 
-subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     java {
@@ -18,7 +16,7 @@ subprojects {
 
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
-        testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
     }
 
     kotlin {

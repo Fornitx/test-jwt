@@ -1,3 +1,9 @@
+pluginManagement {
+    plugins {
+        kotlin("jvm") version System.getProperty("kotlin_version")
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
