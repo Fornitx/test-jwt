@@ -9,7 +9,10 @@ import io.fusionauth.jwt.ec.ECVerifier
 import io.fusionauth.jwt.rsa.RSASigner
 import io.fusionauth.jwt.rsa.RSAVerifier
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import kotlin.test.assertEquals
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FusionAuth {
     private fun sign(signer: Signer): String {
         val jwt = JWT().setAudience(arrayOf("A", "B"))
@@ -26,6 +29,7 @@ class FusionAuth {
         println(jwt.header)
         println(jwt)
         println(jwt.audience)
+        assertEquals(12345, jwt.getInteger("uuid"))
     }
 
     @Test

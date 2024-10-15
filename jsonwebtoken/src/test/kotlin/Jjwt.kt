@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import java.security.KeyFactory
+import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Jjwt {
@@ -19,13 +20,10 @@ class Jjwt {
         val privateKey = KeyFactory.getInstance(algorithm).parsePrivate(privateKeyBase64)
 
         val jwt = Jwts.builder()
-//            .claims(JwtUtils.MAP)
-            .claims()
-            .add("abc", 12345)
+            .claims(JwtUtils.MAP)
             .audience()
             .add("A")
             .add("B")
-            .and()
             .and()
             .signWith(privateKey)
             .compact()
@@ -60,5 +58,6 @@ class Jjwt {
         println(jwtClaims.header)
         println(jwtClaims.payload)
         println(jwtClaims.payload.audience)
+        assertEquals(12345, jwtClaims.payload["uuid", Number::class.java])
     }
 }

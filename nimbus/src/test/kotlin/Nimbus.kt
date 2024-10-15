@@ -15,13 +15,18 @@ import crypto.KeyUtils
 import crypto.KeyUtils.parsePublic
 import crypto.KeyUtils.toBase64
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
 import java.security.interfaces.RSAPublicKey
+import kotlin.test.assertTrue
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Nimbus {
     private fun sign(signer: JWSSigner, algorithm: JWSAlgorithm): String {
-        val claimsSet = JWTClaimsSet.parse(JwtUtils.JSON)
+//        assertEquals(JWTClaimsSet.parse(JwtUtils.JSON), JWTClaimsSet.parse(JwtUtils.MAP))
+
+        val claimsSet = JWTClaimsSet.Builder(JWTClaimsSet.parse(JwtUtils.JSON)).audience(listOf("A", "B")).build()
 
         val signedJWT = SignedJWT(
             JWSHeader.Builder(algorithm).build(),
@@ -49,7 +54,7 @@ class Nimbus {
         println(signedJWT.payload)
 
         val verifier = RSASSAVerifier(KeyFactory.getInstance("RSA").parsePublic(publicKeyBase64) as RSAPublicKey)
-        println(signedJWT.verify(verifier))
+        assertTrue(signedJWT.verify(verifier))
     }
 
     @Test
@@ -65,6 +70,6 @@ class Nimbus {
         println(signedJWT.payload)
 
         val verifier = ECDSAVerifier(KeyFactory.getInstance("EC").parsePublic(publicKeyBase64) as ECPublicKey)
-        println(signedJWT.verify(verifier))
+        assertTrue(signedJWT.verify(verifier))
     }
 }

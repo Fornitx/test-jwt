@@ -17,13 +17,14 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.security.KeyFactory
+import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Jose4j {
     private fun sign(privateKeyBase64: String, keyStoreAlgorithm: String, jwtAlgorithm: String): String {
         KeyUtils.printPrivate(privateKeyBase64)
 
-        val claims = JwtClaims()
+        val claims = JwtClaims.parse(JwtUtils.JSON)
         claims.setAudience("A", "B")
 
         val jws = JsonWebSignature()
@@ -72,5 +73,6 @@ class Jose4j {
         val jwtClaims = parse(jwt, jsonWebKey.publicKey.toBase64())
         println(jwtClaims)
         println(jwtClaims.audience)
+        assertEquals(12345, jwtClaims.getClaimValue("uuid", Number::class.java).toInt())
     }
 }

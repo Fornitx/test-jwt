@@ -17,6 +17,7 @@ import java.security.interfaces.ECPrivateKey
 import java.security.interfaces.ECPublicKey
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
+import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Auth0 {
@@ -48,6 +49,7 @@ class Auth0 {
         println(token.algorithm)
         println(token.claims)
         println(token.audience)
+        assertEquals(12345, token.getClaim("uuid").asInt())
     }
 
     class MyRSAKeyProvider(

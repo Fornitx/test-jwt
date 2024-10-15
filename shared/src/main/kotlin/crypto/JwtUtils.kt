@@ -3,14 +3,14 @@ package crypto
 object JwtUtils {
     const val JSON = """
         {
-          "sub": "12345",
+          "uuid": 12345,
           "name": "John Gold",
           "admin": true
         }
     """
 
     val MAP = mapOf(
-        "sub" to 12345,
+        "uuid" to 12345,
         "name" to "John Gold",
         "admin" to true,
     )
