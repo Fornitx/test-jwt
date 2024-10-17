@@ -1,10 +1,9 @@
 pluginManagement {
-    plugins {
-        kotlin("jvm") version System.getProperty("kotlin_version")
-    }
+    includeBuild("gradle/build-logic")
 }
 
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenCentral()
     }
@@ -12,4 +11,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "test-jwt"
 
-include("auth0", "fusionauth", "jose4j", "jsonwebtoken", "kjwt", "nimbus", "shared")
+include("auth0", "fusionauth", "jose4j", "jsonwebtoken", /*"kjwt",*/ "nimbus", "shared")

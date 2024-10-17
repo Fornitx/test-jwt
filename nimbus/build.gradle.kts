@@ -1,5 +1,5 @@
 plugins {
-    id("myproject.java-conventions")
+    id("buildlogic.kotlin-conventions")
 }
 
 dependencies {
