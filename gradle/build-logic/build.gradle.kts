@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlin.gradle.plugin)
-    implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:" + System.getProperty("kotlinVersion"))
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-reflect:" + System.getProperty("kotlinVersion"))
+    }
 }

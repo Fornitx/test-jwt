@@ -1,34 +1,16 @@
-import org.gradle.accessors.dm.LibrariesForLibs
-
-val libs = the<LibrariesForLibs>()
-
 plugins {
     kotlin("jvm")
 }
 
 dependencies {
-//    constraints {
-//        // Define dependency versions as constraints
-//        implementation("org.apache.commons:commons-text:1.12.0")
-//    }
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation(libs.junit.jupiter)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.2")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-
-//testing {
-//    suites {
-//        // Configure the built-in test suite
-//        val test by getting(JvmTestSuite::class) {
-//            // Use JUnit Jupiter test framework
-//            useJUnitJupiter("5.10.3")
-//        }
-//    }
-//}
 
 java {
     toolchain {
