@@ -25,4 +25,4 @@ jobs:
     - uses: gradle/actions/setup-gradle@v3
 
     - name: Gradle test
-      run: gradle test --show-version --no-daemon -Dkotlin_version=2.0.0
+      run: gradle test --show-version --no-daemon -Dkotlin.version=2.0.21
