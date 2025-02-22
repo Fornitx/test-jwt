@@ -1,4 +1,5 @@
 import io.github.nefilim.kjwt.JWT
+import io.github.nefilim.kjwt.sign
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.time.Duration
@@ -7,7 +8,12 @@ import java.time.Instant
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KJWT {
     @Test
-    fun createJWT() {
+    fun testRsa() {
+
+    }
+
+    @Test
+    fun testEc() {
         val jwt = JWT.es256 {
             audience("MODERATION") // no multiple audience
             subject("1234567890")

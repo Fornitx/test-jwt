@@ -14,24 +14,6 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FusionAuth {
-    private fun sign(signer: Signer): String {
-        val jwt = JWT().setAudience(arrayOf("A", "B"))
-        jwt.otherClaims.putAll(JwtUtils.MAP)
-
-        val encodedJWT = JWT.getEncoder().encode(jwt, signer)
-        JwtUtils.printJwt(encodedJWT)
-
-        return encodedJWT
-    }
-
-    private fun parse(encodedJWT: String, verifier: Verifier) {
-        val jwt = JWT.getDecoder().decode(encodedJWT, verifier)
-        println(jwt.header)
-        println(jwt)
-        println(jwt.audience)
-        assertEquals(12345, jwt.getInteger("uuid"))
-    }
-
     @Test
     fun testRsa() {
         val keyPair = JWTUtils.generate2048_RSAKeyPair()
@@ -56,5 +38,23 @@ class FusionAuth {
 
         val verifier = ECVerifier.newVerifier(keyPair.publicKey)
         parse(encodedJWT, verifier)
+    }
+
+    private fun sign(signer: Signer): String {
+        val jwt = JWT().setAudience(arrayOf("A", "B"))
+        jwt.otherClaims.putAll(JwtUtils.MAP)
+
+        val encodedJWT = JWT.getEncoder().encode(jwt, signer)
+        JwtUtils.printJwt(encodedJWT)
+
+        return encodedJWT
+    }
+
+    private fun parse(encodedJWT: String, verifier: Verifier) {
+        val jwt = JWT.getDecoder().decode(encodedJWT, verifier)
+        println(jwt.header)
+        println(jwt)
+        println(jwt.audience)
+        assertEquals(12345, jwt.getInteger("uuid"))
     }
 }

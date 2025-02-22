@@ -1,0 +1,11 @@
+[versions]
+#kotlin-lang = "2.1.0"
+#kotlin-coroutines = "1.9.0"
+#spring-boot = "3.4.0"
+#spring-dm = "1.1.6"
+
+[libraries]
+spring-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-lang" }

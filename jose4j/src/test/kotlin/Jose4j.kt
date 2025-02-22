@@ -21,6 +21,32 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Jose4j {
+    fun test(): List<Arguments> {
+        return listOf(
+            arguments(
+                RsaJwkGenerator.generateJwk(2048),
+                "RSA",
+                AlgorithmIdentifiers.RSA_USING_SHA256,
+            ),
+            arguments(
+                EcJwkGenerator.generateJwk(EllipticCurves.P256),
+                "EC",
+                AlgorithmIdentifiers.ECDSA_USING_P256_CURVE_AND_SHA256,
+            ),
+        )
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    fun test(jsonWebKey: PublicJsonWebKey, keyStoreAlgorithm: String, jwtAlgorithm: String) {
+        val jwt = sign(jsonWebKey.privateKey.toBase64(), keyStoreAlgorithm, jwtAlgorithm)
+
+        val jwtClaims = parse(jwt, jsonWebKey.publicKey.toBase64())
+        println(jwtClaims)
+        println(jwtClaims.audience)
+        assertEquals(12345, jwtClaims.getClaimValue("uuid", Number::class.java).toInt())
+    }
+
     private fun sign(privateKeyBase64: String, keyStoreAlgorithm: String, jwtAlgorithm: String): String {
         KeyUtils.printPrivate(privateKeyBase64)
 
@@ -48,31 +74,5 @@ class Jose4j {
             .build()
 
         return jwtConsumer.processToClaims(jwt)
-    }
-
-    fun test(): List<Arguments> {
-        return listOf(
-            arguments(
-                RsaJwkGenerator.generateJwk(2048),
-                "RSA",
-                AlgorithmIdentifiers.RSA_USING_SHA256,
-            ),
-            arguments(
-                EcJwkGenerator.generateJwk(EllipticCurves.P256),
-                "EC",
-                AlgorithmIdentifiers.ECDSA_USING_P256_CURVE_AND_SHA256,
-            ),
-        )
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    fun test(jsonWebKey: PublicJsonWebKey, keyStoreAlgorithm: String, jwtAlgorithm: String) {
-        val jwt = sign(jsonWebKey.privateKey.toBase64(), keyStoreAlgorithm, jwtAlgorithm)
-
-        val jwtClaims = parse(jwt, jsonWebKey.publicKey.toBase64())
-        println(jwtClaims)
-        println(jwtClaims.audience)
-        assertEquals(12345, jwtClaims.getClaimValue("uuid", Number::class.java).toInt())
     }
 }

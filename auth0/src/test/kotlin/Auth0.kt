@@ -21,20 +21,6 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Auth0 {
-    private fun sign(algorithm: Algorithm): String {
-        val jwt = JWT.create()
-            .withPayload(JwtUtils.MAP)
-            .withAudience("A", "B")
-            .sign(algorithm)
-
-        JwtUtils.printJwt(jwt)
-        return jwt
-    }
-
-    private fun parse(jwt: String, algorithm: Algorithm): DecodedJWT {
-        return JWT.require(algorithm).build().verify(jwt)
-    }
-
     fun test(): List<Algorithm> = listOf(
         Algorithm.RSA256(MyRSAKeyProvider(KeyUtils.rsaKeyPair(1024))),
         Algorithm.ECDSA256(MyECDSAKeyProvider(KeyUtils.ecKeyPair())),
@@ -52,9 +38,21 @@ class Auth0 {
         assertEquals(12345, token.getClaim("uuid").asInt())
     }
 
+    private fun sign(algorithm: Algorithm): String {
+        val jwt = JWT.create()
+            .withPayload(JwtUtils.MAP)
+            .withAudience("A", "B")
+            .sign(algorithm)
+
+        JwtUtils.printJwt(jwt)
+        return jwt
+    }
+
+    private fun parse(jwt: String, algorithm: Algorithm): DecodedJWT = JWT.require(algorithm).build().verify(jwt)
+
     class MyRSAKeyProvider(
         private val publicKeyBase64: String,
-        private val privateKeyBase64: String
+        private val privateKeyBase64: String,
     ) : RSAKeyProvider {
         constructor(keyPair: KeyPair) : this(keyPair.public.toBase64(), keyPair.private.toBase64())
 
@@ -68,14 +66,12 @@ class Auth0 {
             return KeyFactory.getInstance("RSA").parsePrivate(privateKeyBase64) as RSAPrivateKey
         }
 
-        override fun getPrivateKeyId(): String? {
-            return null
-        }
+        override fun getPrivateKeyId(): String? = null
     }
 
     class MyECDSAKeyProvider(
         private val publicKeyBase64: String,
-        private val privateKeyBase64: String
+        private val privateKeyBase64: String,
     ) : ECDSAKeyProvider {
         constructor(keyPair: KeyPair) : this(keyPair.public.toBase64(), keyPair.private.toBase64())
 
@@ -89,8 +85,6 @@ class Auth0 {
             return KeyFactory.getInstance("EC").parsePrivate(privateKeyBase64) as ECPrivateKey
         }
 
-        override fun getPrivateKeyId(): String? {
-            return null
-        }
+        override fun getPrivateKeyId(): String? = null
     }
 }

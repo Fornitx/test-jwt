@@ -15,6 +15,20 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class Jjwt {
+    @ParameterizedTest
+    @ValueSource(strings = ["RS256", "ES256"])
+    fun test(algorithm: String) {
+        val keyPair = (Jwts.SIG.get()[algorithm] as SignatureAlgorithm).keyPair().build()
+        val jwt = sign(keyPair.private.toBase64(), keyPair.private.algorithm)
+
+        val jwtClaims = parse(jwt, keyPair.public.toBase64())
+        println()
+        println(jwtClaims.header)
+        println(jwtClaims.payload)
+        println(jwtClaims.payload.audience)
+        assertEquals(12345, jwtClaims.payload["uuid", Number::class.java])
+    }
+
     private fun sign(privateKeyBase64: String, algorithm: String): String {
         KeyUtils.printPrivate(privateKeyBase64)
         val privateKey = KeyFactory.getInstance(algorithm).parsePrivate(privateKeyBase64)
@@ -45,19 +59,5 @@ class Jjwt {
             }
             KeyFactory.getInstance(keyFactoryAlgorithm).parsePublic(publicKeyBase64)
         }.build().parseSignedClaims(token)
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = ["RS256", "ES256"])
-    fun test(algorithm: String) {
-        val keyPair = (Jwts.SIG.get()[algorithm] as SignatureAlgorithm).keyPair().build()
-        val jwt = sign(keyPair.private.toBase64(), keyPair.private.algorithm)
-
-        val jwtClaims = parse(jwt, keyPair.public.toBase64())
-        println()
-        println(jwtClaims.header)
-        println(jwtClaims.payload)
-        println(jwtClaims.payload.audience)
-        assertEquals(12345, jwtClaims.payload["uuid", Number::class.java])
     }
 }
