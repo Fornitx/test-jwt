@@ -30,6 +30,6 @@ jobs:
           --show-version
           --no-daemon
           -Pkotlin2-lang.version=2.2.0
-          -Pkotlin2-logging.version=7.0.7
-          -Pspring-boot.version=3.5.3
+          -Pkotlin2-logging.version=7.0.11
+          -Pspring-boot.version=3.5.4
           -Pspring-dm.version=1.1.7

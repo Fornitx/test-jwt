@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.spring.dm)
 }
 
 allprojects {
@@ -11,11 +12,17 @@ allprojects {
 
 subprojects {
     apply(plugin = rootProject.libs.plugins.kotlin.jvm.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.spring.dm.get().pluginId)
+
+    dependencyManagement {
+        imports {
+            mavenBom(rootProject.libs.spring.bom.get().toString())
+        }
+    }
+
+    ext["kotlin.version"] = rootProject.libs.versions.kotlin.lang.get()
 
     dependencies {
-        implementation(platform(rootProject.libs.spring.bom))
-//        implementation(platform(rootProject.libs.kotlin.bom))
-
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
         testImplementation("org.junit.jupiter:junit-jupiter")
 
