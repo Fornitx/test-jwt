@@ -15,7 +15,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-java@v4
         with:
@@ -30,6 +30,6 @@ jobs:
           --show-version
           --no-daemon
           -Pkotlin2-lang.version=2.2.0
-          -Pkotlin2-logging.version=7.0.11
+          -Pkotlin2-logging.version=7.0.13
           -Pspring-boot.version=3.5.4
           -Pspring-dm.version=1.1.7
