@@ -17,19 +17,19 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 25
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - name: Gradle test
         run: >-
           gradle test
           --show-version
           --no-daemon
-          -Pkotlin2-lang.version=2.2.0
-          -Pkotlin2-logging.version=7.0.13
-          -Pspring-boot.version=3.5.4
+          -Pkotlin-lang.version=2.3.0-Beta2
+          -Pkotlin-logging.version=7.0.13
+          -Pspring-boot.version=4.0.0-RC1
           -Pspring-dm.version=1.1.7

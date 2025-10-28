@@ -30,9 +30,9 @@ subprojects {
     }
 
     kotlin {
-        jvmToolchain(21)
+        jvmToolchain(25)
         compilerOptions {
-            freeCompilerArgs.addAll("-Xjsr305=strict")
+            freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
         }
     }
 

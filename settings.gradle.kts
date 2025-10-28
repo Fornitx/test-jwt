@@ -5,8 +5,8 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            version("kotlin-lang", providers.gradleProperty("kotlin2-lang.version").get())
-            version("kotlin-logging", providers.gradleProperty("kotlin2-logging.version").get())
+            version("kotlin-lang", providers.gradleProperty("kotlin-lang.version").get())
+            version("kotlin-logging", providers.gradleProperty("kotlin-logging.version").get())
             version("spring-boot", providers.gradleProperty("spring-boot.version").get())
             version("spring-dm", providers.gradleProperty("spring-dm.version").get())
         }
