@@ -1,4 +1,4 @@
 dependencies {
     implementation(project(":shared"))
-    implementation("com.nimbusds:nimbus-jose-jwt:10.6")
+    implementation("com.nimbusds:nimbus-jose-jwt:10.7")
 }
